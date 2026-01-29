@@ -36,7 +36,7 @@ public class Richal {
                     break; // Exit the loop
                 }
                 // Check if user typed "list" to list all tasks
-                else if (input.equals("list")) {
+                if (input.equals("list")) {
                     System.out.println("--------------------------------");
                     System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < size; i++) {
@@ -53,6 +53,7 @@ public class Richal {
                     System.out.println(tasks[number - 1].toDisplayString());
                     System.out.println("--------------------------------");
                 }
+                // Check if user typed "unmark <number>" to mark a task as not done
                 else if (input.startsWith("unmark ")) {
                     System.out.println("--------------------------------");
                     System.out.println("OK, I've marked this task as not done yet:");
@@ -63,8 +64,24 @@ public class Richal {
                 }
                 // If user typed anything else, add it to the tasks array
                 else {
-                    tasks[size++] = new Task(input);
-                    System.out.println("added: " + input);
+                    System.out.println("--------------------------------");
+                    if (input.startsWith("todo ")) {
+                        tasks[size++] = new Todo(input.substring(5).trim());
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println(tasks[size - 1].toDisplayString());
+                    } else if (input.startsWith("deadline ")) {
+                        String[] parts = input.substring(8).trim().split("/by");
+                        tasks[size++] = new Deadline(parts[0].trim(), parts[1].trim());
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println(tasks[size - 1].toDisplayString());
+                    } else if (input.startsWith("event ")) {
+                        String[] parts = input.substring(6).trim().split("/from");
+                        String[] toParts = parts[1].trim().split("/to");
+                        tasks[size++] = new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim());
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println(tasks[size - 1].toDisplayString());
+                    }
+                    System.out.println("Now you have " + size + " tasks in the list.");
                     System.out.println("--------------------------------");
                 }
             }
