@@ -87,7 +87,16 @@ public class Richal {
             System.out.println("OK, I've marked this task as not done yet:");
             System.out.println(taskList.getTask(number).toDisplayString());
             System.out.println("--------------------------------");
-        } // If user typed anything else, add it to the tasks array
+        } // Check if user typed "delete <number>" to delete a task
+        else if (input.startsWith("delete ")) {
+            System.out.println("--------------------------------");
+            int number = parseIndex(input.substring(7).trim(), taskList.getSize());
+            taskList.deleteTask(number);
+            System.out.println("Noted. I've removed this task:");
+            System.out.println(taskList.getTask(number).toDisplayString());
+            System.out.println("--------------------------------");
+        }
+        // If user typed anything else, add it to the tasks array
         else {
             System.out.println("--------------------------------");
             // Check if user typed "todo <description>" to add a todo task

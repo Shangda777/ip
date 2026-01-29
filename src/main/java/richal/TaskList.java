@@ -18,4 +18,10 @@ public class TaskList {
     public Task getTask(int index) {
         return tasks[index];
     }
+    public void deleteTask(int index) {
+        for (int i = index; i < size - 1; i++) {
+            tasks[i] = tasks[i + 1];
+        }
+        size--;
+    }
 }
