@@ -12,6 +12,9 @@ public class Richal {
     public static void main(String[] args) {
         // Use try-with-resources to automatically manage Scanner resource
         try (Scanner sc = new Scanner(System.in)) {
+            // Initialize tasks array and size
+            String [] tasks = new String[100];
+            int size = 0;
             // Print welcome message and separator line
             System.out.println("--------------------------------");
             System.out.println("Hello! I'm Richal");
@@ -28,9 +31,19 @@ public class Richal {
                     System.out.println("Bye. Hope to see you again soon!");
                     break; // Exit the loop
                 }
-                
-                // Echo the user's input
-                System.out.println(input);
+                // Check if user typed "list" to list all tasks
+                else if (input.equals("list")) {
+                    for (int i = 0; i < size; i++) {
+                        System.out.println((i+1) + ". " + tasks[i]);
+                    }
+                    System.out.println("--------------------------------");
+                }
+                // If user typed anything else, add it to the tasks array
+                else {
+                    tasks[size++] = input;
+                    System.out.println("added: " + input);
+                    System.out.println("--------------------------------");
+                }
             }
             
             // Print ending separator line
