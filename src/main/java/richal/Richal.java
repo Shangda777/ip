@@ -71,7 +71,8 @@ public class Richal {
                 System.out.println((i + 1) + ". " + taskList.getTask(i).toDisplayString());
             }
             System.out.println("--------------------------------");
-        } // Check if user typed "mark <number>" to mark a task as done
+        } 
+        // Check if user typed "mark <number>" to mark a task as done
         else if (input.startsWith("mark ")) {
             System.out.println("--------------------------------");
             int number = parseIndex(input.substring(5).trim(), taskList.getSize());
@@ -79,7 +80,8 @@ public class Richal {
             System.out.println("Nice! I've marked this task as done:");
             System.out.println(taskList.getTask(number).toDisplayString());
             System.out.println("--------------------------------");
-        } // Check if user typed "unmark <number>" to mark a task as not done
+        } 
+        // Check if user typed "unmark <number>" to mark a task as not done
         else if (input.startsWith("unmark ")) {
             System.out.println("--------------------------------");
             int number = parseIndex(input.substring(7).trim(), taskList.getSize());
@@ -87,7 +89,8 @@ public class Richal {
             System.out.println("OK, I've marked this task as not done yet:");
             System.out.println(taskList.getTask(number).toDisplayString());
             System.out.println("--------------------------------");
-        } // Check if user typed "delete <number>" to delete a task
+        } 
+        // Check if user typed "delete <number>" to delete a task
         else if (input.startsWith("delete ")) {
             System.out.println("--------------------------------");
             int number = parseIndex(input.substring(7).trim(), taskList.getSize());
@@ -99,6 +102,7 @@ public class Richal {
         // If user typed anything else, add it to the tasks array
         else {
             System.out.println("--------------------------------");
+           
             // Check if user typed "todo <description>" to add a todo task
             if (input.startsWith("todo")) {
                 String desc = input.length() > 4 ? input.substring(5).trim() : "";
@@ -108,6 +112,7 @@ public class Richal {
                 taskList.addTask(new Todo(desc));
                 System.out.println("Got it. I've added this task:");
                 System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+               
                 // Check if user typed "deadline <description> /by <date/time>" to add a deadline task
             } else if (input.startsWith("deadline")) {
                 String[] parts = input.length() > 8 ? input.substring(8).trim().split("/by") : new String[0];
@@ -117,6 +122,7 @@ public class Richal {
                 taskList.addTask(new Deadline(parts[0].trim(), parts[1].trim()));
                 System.out.println("Got it. I've added this task:");
                 System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+               
                 // Check if user typed "event <description> /from <date/time> /to <date/time>" to add an event task
             } else if (input.startsWith("event")) {
                 String[] parts = input.length() > 6 ? input.substring(6).trim().split("/from") : new String[0];
@@ -130,6 +136,8 @@ public class Richal {
                 taskList.addTask(new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim()));
                 System.out.println("Got it. I've added this task:");
                 System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+                
+                // If user typed anything else, throw an exception
             } else {
                 throw new DukeException("I'm sorry, but I don't know what that means :-(");
             }
