@@ -1,0 +1,3 @@
+T | 1 | buy groceries
+D | 1 | submit report | Friday 5pm
+E | 1 | team meeting | Monday 2pm | 4pm

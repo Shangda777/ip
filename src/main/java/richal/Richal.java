@@ -1,5 +1,6 @@
 package richal;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -7,6 +8,8 @@ import java.util.Scanner;
  * until the user types "bye" to exit
  */
 public class Richal {
+
+    private static final String FILE_PATH = "./data/duke.txt";
 
     /**
      * Main entry point of the program
@@ -16,9 +19,21 @@ public class Richal {
     public static void main(String[] args) {
         // Use try-with-resources to automatically manage Scanner resource
         Scanner sc = new Scanner(System.in);
-        // Initialize tasks array and size
-        TaskList taskList = new TaskList(100);
-        int size = 0;
+        
+        // Initialize storage
+        Storage storage = new Storage(FILE_PATH);
+        TaskList taskList = null;
+
+        // Load tasks from file
+        try {
+            List<Task> tasks = storage.load();
+            taskList = new TaskList(tasks);
+            System.out.println("Loaded " + taskList.getSize() + " tasks from file.");
+        } catch (DukeException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+            System.out.println("Starting with empty task list.");
+            taskList = new TaskList(100);
+        }
 
         // Print welcome message and separator line
         System.out.println("--------------------------------");
@@ -40,6 +55,9 @@ public class Richal {
                 // Process the input
                 processInput(input, taskList);
                 System.out.println("Now you have " + taskList.getSize() + " tasks in the list.");
+                
+                // Save tasks to file after any modification
+                storage.save(taskList.getAllTasks());
             } catch (DukeException e) {
                 // Print the error message
                 System.out.println("OOPS!!! " + e.getMessage());

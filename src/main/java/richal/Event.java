@@ -30,4 +30,22 @@ public class Event extends Task {
     public String toDisplayString() {
         return "[E]" + super.toDisplayString() + " (from: " + from + " to: " + to + ")";
     }
+
+    /**
+     * Returns the start date/time of this event.
+     *
+     * @return the start date or time
+     */
+    public String getFrom() {
+        return from;
+    }
+
+    /**
+     * Returns the end date/time of this event.
+     *
+     * @return the end date or time
+     */
+    public String getTo() {
+        return to;
+    }
 }
