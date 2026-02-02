@@ -1,5 +1,6 @@
 package richal;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -127,6 +128,20 @@ public class Ui {
         System.out.println("Here are the tasks in your list:");
         for (int i = 0; i < taskList.getSize(); i++) {
             System.out.println((i + 1) + ". " + taskList.getTask(i).toDisplayString());
+        }
+        showLine();
+    }
+
+    /**
+     * Displays the list of matching tasks from a find search.
+     *
+     * @param matchingTasks the list of tasks that match the search keyword
+     */
+    public void showMatchingTasks(List<Task> matchingTasks) {
+        showLine();
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            System.out.println((i + 1) + ". " + matchingTasks.get(i).toDisplayString());
         }
         showLine();
     }
