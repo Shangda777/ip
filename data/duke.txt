@@ -1,5 +1,7 @@
-T | 0 | buy groceries
+T | 1 | buy groceries
 D | 0 | return book | 2019-12-02 1800
 D | 0 | submit report | 2019-10-15 0000
 E | 1 | meeting | 2019-08-06 1400 | 2019-08-06 1600
 D | 0 | return book | 2019-12-02 1800
+D | 0 | return book | 2019-12-02 1800
+E | 0 | meeting | 2019-08-06 1400 | 2019-08-06 1600
