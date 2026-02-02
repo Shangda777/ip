@@ -1,199 +1,67 @@
 package richal;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
- * Richal is a simple chatbot program It receives user input and echoes it back
- * until the user types "bye" to exit
+ * Richal is a simple chatbot program.
+ * It receives user input and manages tasks until the user types "bye" to exit.
  */
 public class Richal {
 
     private static final String FILE_PATH = "./data/duke.txt";
+    
+    private Storage storage;
+    private TaskList taskList;
+    private Ui ui;
 
     /**
-     * Main entry point of the program
+     * Creates a Richal chatbot with the specified file path for data storage.
+     *
+     * @param filePath the path to the data file
+     */
+    public Richal(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        try {
+            List<Task> tasks = storage.load();
+            taskList = new TaskList(tasks);
+            ui.showTasksLoaded(taskList.getSize());
+        } catch (DukeException e) {
+            ui.showLoadingError(e.getMessage());
+            taskList = new TaskList(100);
+        }
+    }
+
+    /**
+     * Runs the chatbot.
+     */
+    public void run() {
+        ui.showWelcome();
+        
+        boolean isExit = false;
+        while (!isExit) {
+            try {
+                String input = ui.readCommand();
+                ui.showLine();
+                isExit = Parser.parse(input, taskList, ui, storage);
+            } catch (DukeException e) {
+                ui.showError(e.getMessage());
+            } catch (Exception e) {
+                ui.showError("Something went wrong: " + e.getMessage());
+            } finally {
+                ui.showLine();
+            }
+        }
+        
+        ui.close();
+    }
+
+    /**
+     * Main entry point of the program.
      *
      * @param args Command line arguments (unused)
      */
     public static void main(String[] args) {
-        // Use try-with-resources to automatically manage Scanner resource
-        Scanner sc = new Scanner(System.in);
-        
-        // Initialize storage
-        Storage storage = new Storage(FILE_PATH);
-        TaskList taskList = null;
-
-        // Load tasks from file
-        try {
-            List<Task> tasks = storage.load();
-            taskList = new TaskList(tasks);
-            System.out.println("Loaded " + taskList.getSize() + " tasks from file.");
-        } catch (DukeException e) {
-            System.out.println("Error loading tasks: " + e.getMessage());
-            System.out.println("Starting with empty task list.");
-            taskList = new TaskList(100);
-        }
-
-        // Print welcome message and separator line
-        System.out.println("--------------------------------");
-        System.out.println("Hello! I'm Richal");
-        System.out.println("What can I do for you?");
-        System.out.println("--------------------------------");
-
-        // Enter main loop to continuously receive user input
-        while (true) {
-            // Read a line of text from user input
-            String input = sc.nextLine().trim();
-
-            try {
-                // Check if user typed "bye" to exit the program
-                if (input.equals("bye")) {
-                    System.out.println("Bye. Hope to see you again soon!");
-                    break; // Exit the loop
-                }
-                // Process the input
-                processInput(input, taskList);
-                System.out.println("Now you have " + taskList.getSize() + " tasks in the list.");
-                
-                // Save tasks to file after any modification
-                storage.save(taskList.getAllTasks());
-            } catch (DukeException e) {
-                // Print the error message
-                System.out.println("OOPS!!! " + e.getMessage());
-            } catch (Exception e) {
-                // Print the error message
-                System.out.println("OOPS!!! Something went wrong: " + e.getMessage());
-            } finally {
-                System.out.println("--------------------------------");
-                
-            }
-        }
-        // Close the scanner
-        sc.close();
-    }
-
-    /**
-     * Processes the user input and performs the corresponding action.
-     *
-     * @param input the user input
-     * @param taskList the task list
-     * @throws DukeException if the input is invalid
-     */
-    private static void processInput(String input, TaskList taskList) throws DukeException {
-        // Check if user typed "list" to list all tasks
-        if (input.equals("list")) {
-            System.out.println("--------------------------------");
-            System.out.println("Here are the tasks in your list:");
-            for (int i = 0; i < taskList.getSize(); i++) {
-                System.out.println((i + 1) + ". " + taskList.getTask(i).toDisplayString());
-            }
-            System.out.println("--------------------------------");
-        } 
-        // Check if user typed "mark <number>" to mark a task as done
-        else if (input.startsWith("mark ")) {
-            System.out.println("--------------------------------");
-            int number = parseIndex(input.substring(5).trim(), taskList.getSize());
-            taskList.getTask(number).markDone();
-            System.out.println("Nice! I've marked this task as done:");
-            System.out.println(taskList.getTask(number).toDisplayString());
-            System.out.println("--------------------------------");
-        } 
-        // Check if user typed "unmark <number>" to mark a task as not done
-        else if (input.startsWith("unmark ")) {
-            System.out.println("--------------------------------");
-            int number = parseIndex(input.substring(7).trim(), taskList.getSize());
-            taskList.getTask(number).markUndone();
-            System.out.println("OK, I've marked this task as not done yet:");
-            System.out.println(taskList.getTask(number).toDisplayString());
-            System.out.println("--------------------------------");
-        } 
-        // Check if user typed "delete <number>" to delete a task
-        else if (input.startsWith("delete ")) {
-            System.out.println("--------------------------------");
-            int number = parseIndex(input.substring(7).trim(), taskList.getSize());
-            taskList.deleteTask(number);
-            System.out.println("Noted. I've removed this task:");
-            System.out.println(taskList.getTask(number).toDisplayString());
-            System.out.println("--------------------------------");
-        }
-        // If user typed anything else, add it to the tasks array
-        else {
-            System.out.println("--------------------------------");
-           
-            // Check if user typed "todo <description>" to add a todo task
-            if (input.startsWith("todo")) {
-                String desc = input.length() > 4 ? input.substring(5).trim() : "";
-                if (desc.isEmpty()) {
-                    throw new DukeException("The description of a todo cannot be empty.");
-                }
-                taskList.addTask(new Todo(desc));
-                System.out.println("Got it. I've added this task:");
-                System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
-               
-                // Check if user typed "deadline <description> /by <date>" to add a deadline task
-            } else if (input.startsWith("deadline")) {
-                String[] parts = input.length() > 8 ? input.substring(8).trim().split("/by") : new String[0];
-                if (parts.length != 2) {
-                    throw new DukeException("The description of a deadline must contain a /by date.");
-                }
-                try {
-                    taskList.addTask(new Deadline(parts[0].trim(), parts[1].trim()));
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
-                } catch (Exception e) {
-                    throw new DukeException("Invalid date/time format. Supported formats:\n"
-                        + "  - 2/12/2019 1800 or 2/12/2019 18:00\n"
-                        + "  - 2019-12-02 1800 or 2019-12-02 18:00\n"
-                        + "  - 2/12/2019 (defaults to 00:00)");
-                }
-               
-                // Check if user typed "event <description> /from <date> /to <date>" to add an event task
-            } else if (input.startsWith("event")) {
-                String[] parts = input.length() > 6 ? input.substring(6).trim().split("/from") : new String[0];
-                if (parts.length != 2) {
-                    throw new DukeException("The description of an event must contain a /from date.");
-                }
-                String[] toParts = parts[1].length() > 3 ? parts[1].trim().split("/to") : new String[0];
-                if (toParts.length != 2) {
-                    throw new DukeException("The description of an event must contain a /to date.");
-                }
-                try {
-                    taskList.addTask(new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim()));
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
-                } catch (Exception e) {
-                    throw new DukeException("Invalid date/time format. Supported formats:\n"
-                        + "  - 2/12/2019 1800 or 2/12/2019 18:00\n"
-                        + "  - 2019-12-02 1800 or 2019-12-02 18:00\n"
-                        + "  - 2/12/2019 (defaults to 00:00)");
-                }
-                
-                // If user typed anything else, throw an exception
-            } else {
-                throw new DukeException("I'm sorry, but I don't know what that means :-(");
-            }
-        }
-    }
-    /**
-     * Parses a string to an integer and checks if it is a valid index.
-     *
-     * @param s the string to parse
-     * @param size the size of the list
-     * @return the index
-     * @throws DukeException if the string is not a valid integer or the index is out of range
-     */
-    private static int parseIndex(String s, int size) throws DukeException {
-        try {
-            int number = Integer.parseInt(s);
-            int idx = number - 1;
-            if (idx < 0 || idx >= size) {
-                throw new DukeException("That task number is out of range.");
-            }
-            return idx;
-        } catch (NumberFormatException e) {
-            throw new DukeException("Please provide a valid task number.");
-        }
+        new Richal(FILE_PATH).run();
     }
 }
-
