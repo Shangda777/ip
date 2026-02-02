@@ -1,5 +1,7 @@
 package richal;
 
+import java.util.List;
+
 /**
  * Parses user input and executes the corresponding commands.
  */
@@ -26,6 +28,17 @@ public class Parser {
         if (input.equals("list")) {
             ui.showTaskList(taskList);
             ui.showTaskCount(taskList.getSize());
+            return false;
+        }
+
+        // Check if user typed "find <keyword>" to search for tasks
+        if (input.startsWith("find ")) {
+            String keyword = input.substring(5).trim();
+            if (keyword.isEmpty()) {
+                throw new DukeException("Please provide a keyword to search for.");
+            }
+            List<Task> matching = taskList.findTasks(keyword);
+            ui.showMatchingTasks(matching);
             return false;
         }
 
