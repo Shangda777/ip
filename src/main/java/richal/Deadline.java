@@ -27,4 +27,13 @@ public class Deadline extends Task {
     public String toDisplayString() {
         return "[D]" + super.toDisplayString() + " (by: " + by + ")";
     }
+
+    /**
+     * Returns the due date/time of this deadline.
+     *
+     * @return the due date or time
+     */
+    public String getBy() {
+        return by;
+    }
 }
