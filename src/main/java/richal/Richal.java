@@ -131,29 +131,43 @@ public class Richal {
                 System.out.println("Got it. I've added this task:");
                 System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
                
-                // Check if user typed "deadline <description> /by <date/time>" to add a deadline task
+                // Check if user typed "deadline <description> /by <date>" to add a deadline task
             } else if (input.startsWith("deadline")) {
                 String[] parts = input.length() > 8 ? input.substring(8).trim().split("/by") : new String[0];
                 if (parts.length != 2) {
-                    throw new DukeException("The description of a deadline must contain a /by date/time.");
+                    throw new DukeException("The description of a deadline must contain a /by date.");
                 }
-                taskList.addTask(new Deadline(parts[0].trim(), parts[1].trim()));
-                System.out.println("Got it. I've added this task:");
-                System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+                try {
+                    taskList.addTask(new Deadline(parts[0].trim(), parts[1].trim()));
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+                } catch (Exception e) {
+                    throw new DukeException("Invalid date/time format. Supported formats:\n"
+                        + "  - 2/12/2019 1800 or 2/12/2019 18:00\n"
+                        + "  - 2019-12-02 1800 or 2019-12-02 18:00\n"
+                        + "  - 2/12/2019 (defaults to 00:00)");
+                }
                
-                // Check if user typed "event <description> /from <date/time> /to <date/time>" to add an event task
+                // Check if user typed "event <description> /from <date> /to <date>" to add an event task
             } else if (input.startsWith("event")) {
                 String[] parts = input.length() > 6 ? input.substring(6).trim().split("/from") : new String[0];
                 if (parts.length != 2) {
-                    throw new DukeException("The description of an event must contain a /from date/time.");
+                    throw new DukeException("The description of an event must contain a /from date.");
                 }
                 String[] toParts = parts[1].length() > 3 ? parts[1].trim().split("/to") : new String[0];
                 if (toParts.length != 2) {
-                    throw new DukeException("The description of an event must contain a /to date/time.");
+                    throw new DukeException("The description of an event must contain a /to date.");
                 }
-                taskList.addTask(new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim()));
-                System.out.println("Got it. I've added this task:");
-                System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+                try {
+                    taskList.addTask(new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim()));
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println(taskList.getTask(taskList.getSize() - 1).toDisplayString());
+                } catch (Exception e) {
+                    throw new DukeException("Invalid date/time format. Supported formats:\n"
+                        + "  - 2/12/2019 1800 or 2/12/2019 18:00\n"
+                        + "  - 2019-12-02 1800 or 2019-12-02 18:00\n"
+                        + "  - 2/12/2019 (defaults to 00:00)");
+                }
                 
                 // If user typed anything else, throw an exception
             } else {
