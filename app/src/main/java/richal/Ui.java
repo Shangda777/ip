@@ -1,7 +1,6 @@
 package richal;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Handles interactions with the user.
@@ -9,165 +8,97 @@ import java.util.Scanner;
  */
 public class Ui {
     private static final String LINE_SEPARATOR = "--------------------------------";
-    private final Scanner scanner;
 
     /**
-     * Creates a Ui object with a Scanner for user input.
+     * Returns the welcome message.
      */
-    public Ui() {
-        this.scanner = new Scanner(System.in);
+    public String getWelcomeMessage() {
+        return "Hello! I'm Richal\nWhat can I do for you?";
     }
 
     /**
-     * Displays the welcome message.
+     * Returns the goodbye message.
      */
-    public void showWelcome() {
-        showLine();
-        System.out.println("Hello! I'm Richal");
-        System.out.println("What can I do for you?");
-        showLine();
+    public String getGoodbyeMessage() {
+        return "Bye. Hope to see you again soon!";
     }
 
     /**
-     * Displays the goodbye message.
-     */
-    public void showGoodbye() {
-        System.out.println("Bye. Hope to see you again soon!");
-    }
-
-    /**
-     * Displays a line separator.
-     */
-    public void showLine() {
-        System.out.println(LINE_SEPARATOR);
-    }
-
-    /**
-     * Displays an error message.
+     * Returns an error message.
      *
-     * @param message the error message to display
+     * @param message the error message
      */
-    public void showError(String message) {
-        System.out.println("OOPS!!! " + message);
+    public String getErrorMessage(String message) {
+        return "OOPS!!! " + message;
     }
 
     /**
-     * Displays a loading error message.
-     *
-     * @param message the error message to display
-     */
-    public void showLoadingError(String message) {
-        System.out.println("Error loading tasks: " + message);
-        System.out.println("Starting with empty task list.");
-    }
-
-    /**
-     * Displays the number of loaded tasks.
-     *
-     * @param count the number of tasks loaded
-     */
-    public void showTasksLoaded(int count) {
-        System.out.println("Loaded " + count + " tasks from file.");
-    }
-
-    /**
-     * Displays a message about a task being added.
+     * Returns a message about a task being added.
      *
      * @param task the task that was added
      * @param totalTasks the total number of tasks
      */
-    public void showTaskAdded(Task task, int totalTasks) {
-        showLine();
-        System.out.println("Got it. I've added this task:");
-        System.out.println(task.toDisplayString());
+    public String getTaskAddedMessage(Task task, int totalTasks) {
+        return "Got it. I've added this task:\n" 
+            + task.toDisplayString() + "\n"
+            + "Now you have " + totalTasks + " tasks in the list.";
     }
 
     /**
-     * Displays a message about a task being marked as done.
+     * Returns a message about a task being marked as done.
      *
      * @param task the task that was marked
      */
-    public void showTaskMarked(Task task) {
-        showLine();
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println(task.toDisplayString());
-        showLine();
+    public String getTaskMarkedMessage(Task task) {
+        return "Nice! I've marked this task as done:\n" 
+            + task.toDisplayString();
     }
 
     /**
-     * Displays a message about a task being unmarked.
+     * Returns a message about a task being unmarked.
      *
      * @param task the task that was unmarked
      */
-    public void showTaskUnmarked(Task task) {
-        showLine();
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println(task.toDisplayString());
-        showLine();
+    public String getTaskUnmarkedMessage(Task task) {
+        return "OK, I've marked this task as not done yet:\n" 
+            + task.toDisplayString();
     }
 
     /**
-     * Displays a message about a task being deleted.
+     * Returns a message about a task being deleted.
      *
      * @param task the task that was deleted
+     * @param remainingTasks the number of remaining tasks
      */
-    public void showTaskDeleted(Task task) {
-        showLine();
-        System.out.println("Noted. I've removed this task:");
-        System.out.println(task.toDisplayString());
-        showLine();
+    public String getTaskDeletedMessage(Task task, int remainingTasks) {
+        return "Noted. I've removed this task:\n" 
+            + task.toDisplayString() + "\n"
+            + "Now you have " + remainingTasks + " tasks in the list.";
     }
 
     /**
-     * Displays the list of tasks.
+     * Returns the list of tasks.
      *
      * @param taskList the task list to display
      */
-    public void showTaskList(TaskList taskList) {
-        showLine();
-        System.out.println("Here are the tasks in your list:");
+    public String getTaskListMessage(TaskList taskList) {
+        StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
         for (int i = 0; i < taskList.getSize(); i++) {
-            System.out.println((i + 1) + ". " + taskList.getTask(i).toDisplayString());
+            sb.append((i + 1)).append(". ").append(taskList.getTask(i).toDisplayString()).append("\n");
         }
-        showLine();
+        return sb.toString().trim();
     }
 
     /**
-     * Displays the list of matching tasks from a find search.
+     * Returns the list of matching tasks from a find search.
      *
      * @param matchingTasks the list of tasks that match the search keyword
      */
-    public void showMatchingTasks(List<Task> matchingTasks) {
-        showLine();
-        System.out.println("Here are the matching tasks in your list:");
+    public String getMatchingTasksMessage(List<Task> matchingTasks) {
+        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
         for (int i = 0; i < matchingTasks.size(); i++) {
-            System.out.println((i + 1) + ". " + matchingTasks.get(i).toDisplayString());
+            sb.append((i + 1)).append(". ").append(matchingTasks.get(i).toDisplayString()).append("\n");
         }
-        showLine();
-    }
-
-    /**
-     * Displays the number of tasks in the list.
-     *
-     * @param count the number of tasks
-     */
-    public void showTaskCount(int count) {
-        System.out.println("Now you have " + count + " tasks in the list.");
-    }
-
-    /**
-     * Reads a command from the user.
-     *
-     * @return the command entered by the user
-     */
-    public String readCommand() {
-        return scanner.nextLine().trim();
-    }
-
-    /**
-     * Closes the scanner.
-     */
-    public void close() {
-        scanner.close();
+        return sb.toString().trim();
     }
 }

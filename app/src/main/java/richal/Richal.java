@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Richal {
 
-    private static final String FILE_PATH = "./data/duke.txt";
+    private static final String FILE_PATH = "./data/richal.txt";
     
     private Storage storage;
     private TaskList taskList;
@@ -25,35 +25,29 @@ public class Richal {
         try {
             List<Task> tasks = storage.load();
             taskList = new TaskList(tasks);
-            ui.showTasksLoaded(taskList.getSize());
         } catch (DukeException e) {
-            ui.showLoadingError(e.getMessage());
             taskList = new TaskList(100);
         }
     }
 
     /**
-     * Runs the chatbot.
+     * Gets the welcome message.
      */
-    public void run() {
-        ui.showWelcome();
-        
-        boolean isExit = false;
-        while (!isExit) {
-            try {
-                String input = ui.readCommand();
-                ui.showLine();
-                isExit = Parser.parse(input, taskList, ui, storage);
-            } catch (DukeException e) {
-                ui.showError(e.getMessage());
-            } catch (Exception e) {
-                ui.showError("Something went wrong: " + e.getMessage());
-            } finally {
-                ui.showLine();
-            }
+    public String getWelcome() {
+        return ui.getWelcomeMessage();
+    }
+
+    /**
+     * Processes user input and returns the response.
+     */
+    public String getResponse(String input) {
+        try {
+            return Parser.parseAndGetResponse(input, taskList, ui, storage);
+        } catch (DukeException e) {
+            return ui.getErrorMessage(e.getMessage());
+        } catch (Exception e) {
+            return ui.getErrorMessage("Something went wrong: " + e.getMessage());
         }
-        
-        ui.close();
     }
 
     /**
@@ -62,6 +56,6 @@ public class Richal {
      * @param args Command line arguments (unused)
      */
     public static void main(String[] args) {
-        new Richal(FILE_PATH).run();
+        new Richal(FILE_PATH);
     }
 }

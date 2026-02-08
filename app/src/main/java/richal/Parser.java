@@ -8,27 +8,25 @@ import java.util.List;
 public class Parser {
 
     /**
-     * Parses and executes a user command.
+     * Parses and executes a user command, returning the response.
      *
      * @param input the user input
      * @param taskList the task list
      * @param ui the UI object
      * @param storage the storage object
-     * @return true if the program should exit, false otherwise
+     * @return the response message
      * @throws DukeException if the command is invalid
      */
-    public static boolean parse(String input, TaskList taskList, Ui ui, Storage storage) throws DukeException {
+    public static String parseAndGetResponse(String input, TaskList taskList, Ui ui, Storage storage) throws DukeException {
+        
         // Check if user typed "bye" to exit the program
         if (input.equals("bye")) {
-            ui.showGoodbye();
-            return true;
+            return ui.getGoodbyeMessage();
         }
 
         // Check if user typed "list" to list all tasks
         if (input.equals("list")) {
-            ui.showTaskList(taskList);
-            ui.showTaskCount(taskList.getSize());
-            return false;
+            return ui.getTaskListMessage(taskList);
         }
 
         // Check if user typed "find <keyword>" to search for tasks
@@ -38,28 +36,23 @@ public class Parser {
                 throw new DukeException("Please provide a keyword to search for.");
             }
             List<Task> matching = taskList.findTasks(keyword);
-            ui.showMatchingTasks(matching);
-            return false;
+            return ui.getMatchingTasksMessage(matching);
         }
 
         // Check if user typed "mark <number>" to mark a task as done
         if (input.startsWith("mark ")) {
             int index = parseIndex(input.substring(5).trim(), taskList.getSize());
             taskList.getTask(index).markDone();
-            ui.showTaskMarked(taskList.getTask(index));
-            ui.showTaskCount(taskList.getSize());
             saveToStorage(taskList, storage, ui);
-            return false;
+            return ui.getTaskMarkedMessage(taskList.getTask(index));
         }
 
         // Check if user typed "unmark <number>" to mark a task as not done
         if (input.startsWith("unmark ")) {
             int index = parseIndex(input.substring(7).trim(), taskList.getSize());
             taskList.getTask(index).markUndone();
-            ui.showTaskUnmarked(taskList.getTask(index));
-            ui.showTaskCount(taskList.getSize());
             saveToStorage(taskList, storage, ui);
-            return false;
+            return ui.getTaskUnmarkedMessage(taskList.getTask(index));
         }
 
         // Check if user typed "delete <number>" to delete a task
@@ -67,10 +60,8 @@ public class Parser {
             int index = parseIndex(input.substring(7).trim(), taskList.getSize());
             Task deletedTask = taskList.getTask(index);
             taskList.deleteTask(index);
-            ui.showTaskDeleted(deletedTask);
-            ui.showTaskCount(taskList.getSize());
             saveToStorage(taskList, storage, ui);
-            return false;
+            return ui.getTaskDeletedMessage(deletedTask, taskList.getSize());
         }
 
         // Check if user typed "todo <description>" to add a todo task
@@ -81,10 +72,8 @@ public class Parser {
             }
             Task task = new Todo(desc);
             taskList.addTask(task);
-            ui.showTaskAdded(task, taskList.getSize());
-            ui.showTaskCount(taskList.getSize());
             saveToStorage(taskList, storage, ui);
-            return false;
+            return ui.getTaskAddedMessage(task, taskList.getSize());
         }
 
         // Check if user typed "deadline <description> /by <date>" to add a deadline task
@@ -96,16 +85,14 @@ public class Parser {
             try {
                 Task task = new Deadline(parts[0].trim(), parts[1].trim());
                 taskList.addTask(task);
-                ui.showTaskAdded(task, taskList.getSize());
-                ui.showTaskCount(taskList.getSize());
                 saveToStorage(taskList, storage, ui);
+                return ui.getTaskAddedMessage(task, taskList.getSize());
             } catch (Exception e) {
                 throw new DukeException("Invalid date/time format. Supported formats:\n"
                     + "  - 2/12/2019 1800 or 2/12/2019 18:00\n"
                     + "  - 2019-12-02 1800 or 2019-12-02 18:00\n"
                     + "  - 2/12/2019 (defaults to 00:00)");
             }
-            return false;
         }
 
         // Check if user typed "event <description> /from <date> /to <date>" to add an event task
@@ -121,16 +108,14 @@ public class Parser {
             try {
                 Task task = new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim());
                 taskList.addTask(task);
-                ui.showTaskAdded(task, taskList.getSize());
-                ui.showTaskCount(taskList.getSize());
                 saveToStorage(taskList, storage, ui);
+                return ui.getTaskAddedMessage(task, taskList.getSize());
             } catch (Exception e) {
                 throw new DukeException("Invalid date/time format. Supported formats:\n"
                     + "  - 2/12/2019 1800 or 2/12/2019 18:00\n"
                     + "  - 2019-12-02 1800 or 2019-12-02 18:00\n"
                     + "  - 2/12/2019 (defaults to 00:00)");
             }
-            return false;
         }
 
         // If none of the above, throw an exception
@@ -169,7 +154,7 @@ public class Parser {
         try {
             storage.save(taskList.getAllTasks());
         } catch (DukeException e) {
-            ui.showError(e.getMessage());
+            // Silently handle save errors
         }
     }
 }

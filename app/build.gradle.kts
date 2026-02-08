@@ -41,7 +41,7 @@ java {
 }
 
 application {
-    mainClass.set("richal.Richal")
+    mainClass.set("richal.Main")
 }
 
 tasks.named<JavaExec>("run") {
@@ -54,6 +54,6 @@ tasks.named<Test>("test") {
 
 tasks.named<Jar>("jar") {
     manifest {
-        attributes["Main-Class"] = "richal.Richal"
+        attributes["Main-Class"] = "richal.Main"
     }
 }

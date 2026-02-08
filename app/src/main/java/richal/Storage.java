@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 /**
  * Handles loading and saving tasks from/to a file.
- * Uses relative path from project root (e.g., ./data/duke.txt).
+ * Uses relative path from project root (e.g., ./data/richal.txt).
  */
 public class Storage {
     private final String filePath;
