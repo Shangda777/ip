@@ -1,4 +1,4 @@
-package richal;
+package richal.ui;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -15,8 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * A dialog box with an ImageView and a Label.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -38,9 +37,6 @@ public class DialogBox extends HBox {
         displayPicture.setImage(img);
     }
 
-    /**
-     * Flips the dialog box such that the ImageView is on the left and text on the right.
-     */
     private void flip() {
         ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
         Collections.reverse(tmp);
@@ -48,16 +44,10 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
     }
 
-    /**
-     * Creates a dialog box for the user.
-     */
     public static DialogBox getUserDialog(String text, Image img) {
         return new DialogBox(text, img);
     }
 
-    /**
-     * Creates a dialog box for Richal (avatar on the left).
-     */
     public static DialogBox getRichalDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();

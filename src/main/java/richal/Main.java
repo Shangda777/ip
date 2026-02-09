@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import richal.ui.MainWindow;
+
 /**
  * A GUI for Richal using FXML.
  */
@@ -23,7 +25,7 @@ public class Main extends Application {
             Scene scene = new Scene(ap);
             stage.setScene(scene);
             stage.setTitle("Richal");
-            fxmlLoader.<MainWindow>getController().setRichal(richal);  // inject the Richal instance
+            fxmlLoader.<MainWindow>getController().setRichal(richal);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

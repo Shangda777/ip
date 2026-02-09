@@ -1,6 +1,7 @@
 package richal;
 
 import java.time.LocalDateTime;
+import richal.task.Event;
 import java.time.format.DateTimeParseException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

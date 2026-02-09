@@ -1,35 +1,31 @@
-package richal;
+package richal.command;
 
 import java.util.List;
+
+import richal.DukeException;
+import richal.storage.Storage;
+import richal.task.Deadline;
+import richal.task.Event;
+import richal.task.Task;
+import richal.task.TaskList;
+import richal.task.Todo;
+import richal.ui.Ui;
 
 /**
  * Parses user input and executes the corresponding commands.
  */
 public class Parser {
 
-    /**
-     * Parses and executes a user command, returning the response.
-     *
-     * @param input the user input
-     * @param taskList the task list
-     * @param ui the UI object
-     * @param storage the storage object
-     * @return the response message
-     * @throws DukeException if the command is invalid
-     */
     public static String parseAndGetResponse(String input, TaskList taskList, Ui ui, Storage storage) throws DukeException {
-        
-        // Check if user typed "bye" to exit the program
+
         if (input.equals("bye")) {
             return ui.getGoodbyeMessage();
         }
 
-        // Check if user typed "list" to list all tasks
         if (input.equals("list")) {
             return ui.getTaskListMessage(taskList);
         }
 
-        // Check if user typed "find <keyword>" to search for tasks
         if (input.startsWith("find ")) {
             String keyword = input.substring(5).trim();
             if (keyword.isEmpty()) {
@@ -39,7 +35,6 @@ public class Parser {
             return ui.getMatchingTasksMessage(matching);
         }
 
-        // Check if user typed "mark <number>" to mark a task as done
         if (input.startsWith("mark ")) {
             int index = parseIndex(input.substring(5).trim(), taskList.getSize());
             taskList.getTask(index).markDone();
@@ -47,7 +42,6 @@ public class Parser {
             return ui.getTaskMarkedMessage(taskList.getTask(index));
         }
 
-        // Check if user typed "unmark <number>" to mark a task as not done
         if (input.startsWith("unmark ")) {
             int index = parseIndex(input.substring(7).trim(), taskList.getSize());
             taskList.getTask(index).markUndone();
@@ -55,7 +49,6 @@ public class Parser {
             return ui.getTaskUnmarkedMessage(taskList.getTask(index));
         }
 
-        // Check if user typed "delete <number>" to delete a task
         if (input.startsWith("delete ")) {
             int index = parseIndex(input.substring(7).trim(), taskList.getSize());
             Task deletedTask = taskList.getTask(index);
@@ -64,7 +57,6 @@ public class Parser {
             return ui.getTaskDeletedMessage(deletedTask, taskList.getSize());
         }
 
-        // Check if user typed "todo <description>" to add a todo task
         if (input.startsWith("todo")) {
             String desc = input.length() > 4 ? input.substring(5).trim() : "";
             if (desc.isEmpty()) {
@@ -76,7 +68,6 @@ public class Parser {
             return ui.getTaskAddedMessage(task, taskList.getSize());
         }
 
-        // Check if user typed "deadline <description> /by <date>" to add a deadline task
         if (input.startsWith("deadline")) {
             String[] parts = input.length() > 8 ? input.substring(8).trim().split("/by") : new String[0];
             if (parts.length != 2) {
@@ -95,7 +86,6 @@ public class Parser {
             }
         }
 
-        // Check if user typed "event <description> /from <date> /to <date>" to add an event task
         if (input.startsWith("event")) {
             String[] parts = input.length() > 6 ? input.substring(6).trim().split("/from") : new String[0];
             if (parts.length != 2) {
@@ -118,18 +108,9 @@ public class Parser {
             }
         }
 
-        // If none of the above, throw an exception
         throw new DukeException("I'm sorry, but I don't know what that means :-(");
     }
 
-    /**
-     * Parses a string to an integer and checks if it is a valid index.
-     *
-     * @param s the string to parse
-     * @param size the size of the list
-     * @return the index
-     * @throws DukeException if the string is not a valid integer or the index is out of range
-     */
     private static int parseIndex(String s, int size) throws DukeException {
         try {
             int number = Integer.parseInt(s);
@@ -143,13 +124,6 @@ public class Parser {
         }
     }
 
-    /**
-     * Saves the task list to storage.
-     *
-     * @param taskList the task list to save
-     * @param storage the storage object
-     * @param ui the UI object
-     */
     private static void saveToStorage(TaskList taskList, Storage storage, Ui ui) {
         try {
             storage.save(taskList.getAllTasks());

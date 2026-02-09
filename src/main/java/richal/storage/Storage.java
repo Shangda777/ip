@@ -1,4 +1,4 @@
-package richal;
+package richal.storage;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,34 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import richal.DukeException;
+import richal.task.Deadline;
+import richal.task.Event;
+import richal.task.Task;
+import richal.task.Todo;
+
 /**
  * Handles loading and saving tasks from/to a file.
- * Uses relative path from project root (e.g., ./data/richal.txt).
  */
 public class Storage {
     private final String filePath;
 
-    /**
-     * Creates a Storage object with the specified file path.
-     *
-     * @param filePath the relative path to the data file
-     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    /**
-     * Loads tasks from the file.
-     * Creates the file and directory if they don't exist.
-     *
-     * @return a list of tasks loaded from the file
-     * @throws DukeException if there is an error loading the file
-     */
     public List<Task> load() throws DukeException {
         List<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
 
-        // If file doesn't exist, create directory and return empty list
         if (!file.exists()) {
             try {
                 File parent = file.getParentFile();
@@ -48,7 +40,6 @@ public class Storage {
             return tasks;
         }
 
-        // Read tasks from file
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
@@ -67,13 +58,6 @@ public class Storage {
         return tasks;
     }
 
-    /**
-     * Parses a line from the file into a Task object.
-     * Format: TYPE | DONE | DESCRIPTION [| EXTRA_INFO]
-     *
-     * @param line the line to parse
-     * @return the parsed Task, or null if the format is invalid
-     */
     private Task parseTask(String line) {
         try {
             String[] parts = line.split(" \\| ");
@@ -113,12 +97,6 @@ public class Storage {
         }
     }
 
-    /**
-     * Saves tasks to the file.
-     *
-     * @param tasks the list of tasks to save
-     * @throws DukeException if there is an error saving to the file
-     */
     public void save(List<Task> tasks) throws DukeException {
         try {
             File file = new File(filePath);
@@ -137,13 +115,6 @@ public class Storage {
         }
     }
 
-    /**
-     * Formats a task into a string for saving to file.
-     * Format: TYPE | DONE | DESCRIPTION [| EXTRA_INFO]
-     *
-     * @param task the task to format
-     * @return the formatted string
-     */
     private String formatTask(Task task) {
         String type;
         String extraInfo = "";
