@@ -22,6 +22,12 @@ public class Ui {
         return "OOPS!!! " + message;
     }
 
+    /**
+     * Returns a message confirming a task was added.
+     *
+     * @param task       the newly added task
+     * @param totalTasks total number of tasks after addition
+     */
     public String getTaskAddedMessage(Task task, int totalTasks) {
         return "Got it. I've added this task:\n"
             + task.toDisplayString() + "\n"
@@ -36,24 +42,40 @@ public class Ui {
         return "OK, I've marked this task as not done yet:\n" + task.toDisplayString();
     }
 
+    /**
+     * Returns a message confirming a task was deleted.
+     *
+     * @param task           the deleted task
+     * @param remainingTasks number of tasks remaining
+     */
     public String getTaskDeletedMessage(Task task, int remainingTasks) {
         return "Noted. I've removed this task:\n"
             + task.toDisplayString() + "\n"
             + "Now you have " + remainingTasks + " tasks in the list.";
     }
 
+    /**
+     * Returns a numbered list of all tasks.
+     *
+     * @param taskList the current task list
+     */
     public String getTaskListMessage(TaskList taskList) {
         StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
         for (int i = 0; i < taskList.getSize(); i++) {
-            sb.append((i + 1)).append(". ").append(taskList.getTask(i).toDisplayString()).append("\n");
+            sb.append(i + 1).append(". ").append(taskList.getTask(i).toDisplayString()).append("\n");
         }
         return sb.toString().trim();
     }
 
+    /**
+     * Returns a numbered list of matching tasks.
+     *
+     * @param matchingTasks the list of matching tasks
+     */
     public String getMatchingTasksMessage(List<Task> matchingTasks) {
         StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
         for (int i = 0; i < matchingTasks.size(); i++) {
-            sb.append((i + 1)).append(". ").append(matchingTasks.get(i).toDisplayString()).append("\n");
+            sb.append(i + 1).append(". ").append(matchingTasks.get(i).toDisplayString()).append("\n");
         }
         return sb.toString().trim();
     }

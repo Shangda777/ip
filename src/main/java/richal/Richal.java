@@ -19,6 +19,11 @@ public class Richal {
     private TaskList taskList;
     private Ui ui;
 
+    /**
+     * Creates a Richal instance, loading existing tasks from the given file.
+     *
+     * @param filePath path to the data file
+     */
     public Richal(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -30,10 +35,17 @@ public class Richal {
         }
     }
 
+    /** Returns the welcome message to display on startup. */
     public String getWelcome() {
         return ui.getWelcomeMessage();
     }
 
+    /**
+     * Processes a user command and returns the response.
+     *
+     * @param input the raw user input
+     * @return the response string
+     */
     public String getResponse(String input) {
         try {
             return Parser.parseAndGetResponse(input, taskList, ui, storage);

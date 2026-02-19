@@ -1,7 +1,6 @@
 package richal.task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 
 import richal.util.DateTimeParser;
 
@@ -13,12 +12,26 @@ public class Event extends Task {
     private LocalDateTime from;
     private LocalDateTime to;
 
+    /**
+     * Creates an Event with explicit LocalDateTime boundaries.
+     *
+     * @param description task description
+     * @param from        start date/time
+     * @param to          end date/time
+     */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
         this.from = from;
         this.to = to;
     }
 
+    /**
+     * Creates an Event by parsing date/time strings.
+     *
+     * @param description task description
+     * @param fromString  start date/time string (multiple formats supported)
+     * @param toString    end date/time string (multiple formats supported)
+     */
     public Event(String description, String fromString, String toString) {
         super(description);
         this.from = DateTimeParser.parse(fromString);
@@ -27,7 +40,8 @@ public class Event extends Task {
 
     @Override
     public String toDisplayString() {
-        return "[E]" + super.toDisplayString() + " (from: " + DateTimeParser.formatForDisplay(from)
+        return "[E]" + super.toDisplayString()
+                + " (from: " + DateTimeParser.formatForDisplay(from)
                 + " to: " + DateTimeParser.formatForDisplay(to) + ")";
     }
 
@@ -39,10 +53,12 @@ public class Event extends Task {
         return to;
     }
 
+    /** Returns the start date/time formatted for file storage. */
     public String getFrom() {
         return DateTimeParser.formatForStorage(from);
     }
 
+    /** Returns the end date/time formatted for file storage. */
     public String getTo() {
         return DateTimeParser.formatForStorage(to);
     }
