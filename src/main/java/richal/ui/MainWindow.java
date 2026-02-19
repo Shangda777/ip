@@ -34,6 +34,7 @@ public class MainWindow extends AnchorPane {
     }
 
     public void setRichal(Richal r) {
+        assert r != null : "Injected Richal instance should not be null";
         richal = r;
         dialogContainer.getChildren().add(
             DialogBox.getRichalDialog(richal.getWelcome(), richalImage)
@@ -42,6 +43,7 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     private void handleUserInput() {
+        assert richal != null : "Richal instance should be initialized before handling input";
         String input = userInput.getText();
         String response = richal.getResponse(input);
         dialogContainer.getChildren().addAll(
