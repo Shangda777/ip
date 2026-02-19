@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import richal.DukeException;
 import richal.task.Deadline;
@@ -39,30 +40,40 @@ public class Storage {
      * @throws DukeException if the file cannot be read or created
      */
     public List<Task> load() throws DukeException {
-        List<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
 
         if (!file.exists()) {
             createFile(file);
-            return tasks;
+            return new ArrayList<>();
         }
 
         try (Scanner scanner = new Scanner(file)) {
+            List<Task> tasks = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                Task task = parseTask(line);
-                if (task != null) {
-                    tasks.add(task);
+                if (!line.isEmpty()) {
+                    Task task = parseTask(line);
+                    if (task != null) {
+                        tasks.add(task);
+                    }
                 }
             }
+            return tasks;
         } catch (IOException e) {
             throw new DukeException("Error loading tasks from file: " + e.getMessage());
         }
+    }
 
-        return tasks;
+    private void createFile(File file) throws DukeException {
+        try {
+            File parent = file.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new DukeException("Error creating data file: " + e.getMessage());
+        }
     }
 
     private void createFile(File file) throws DukeException {
@@ -125,9 +136,13 @@ public class Storage {
             parent.mkdirs();
         }
 
+        String content = tasks.stream()
+                .map(this::formatTask)
+                .collect(Collectors.joining("\n"));
+
         try (FileWriter writer = new FileWriter(file)) {
-            for (Task task : tasks) {
-                writer.write(formatTask(task) + "\n");
+            if (!content.isEmpty()) {
+                writer.write(content + "\n");
             }
         } catch (IOException e) {
             throw new DukeException("Error saving tasks to file: " + e.getMessage());

@@ -1,7 +1,8 @@
 package richal.task;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages a list of tasks.
@@ -49,9 +50,7 @@ public class TaskList {
         tasks[size++] = task;
     }
 
-    /**
-     * Returns the number of tasks in the list.
-     */
+    /** Returns the number of tasks in the list. */
     public int getSize() {
         return size;
     }
@@ -80,15 +79,10 @@ public class TaskList {
         size--;
     }
 
-    /**
-     * Returns all tasks as a list.
-     */
+    /** Returns all tasks as a list. */
     public List<Task> getAllTasks() {
-        List<Task> taskList = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            taskList.add(tasks[i]);
-        }
-        return taskList;
+        return Arrays.stream(tasks, 0, size)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -98,13 +92,9 @@ public class TaskList {
      */
     public List<Task> findTasks(String keyword) {
         assert keyword != null : "Find keyword should not be null";
-        List<Task> matching = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
-        for (int i = 0; i < size; i++) {
-            if (tasks[i].getDescription().toLowerCase().contains(lowerKeyword)) {
-                matching.add(tasks[i]);
-            }
-        }
-        return matching;
+        return Arrays.stream(tasks, 0, size)
+                .filter(t -> t.getDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
     }
 }

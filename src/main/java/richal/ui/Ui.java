@@ -1,6 +1,8 @@
 package richal.ui;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import richal.task.Task;
 import richal.task.TaskList;
@@ -60,11 +62,11 @@ public class Ui {
      * @param taskList the current task list
      */
     public String getTaskListMessage(TaskList taskList) {
-        StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
-        for (int i = 0; i < taskList.getSize(); i++) {
-            sb.append(i + 1).append(". ").append(taskList.getTask(i).toDisplayString()).append("\n");
-        }
-        return sb.toString().trim();
+        List<Task> tasks = taskList.getAllTasks();
+        String items = IntStream.range(0, tasks.size())
+                .mapToObj(i -> (i + 1) + ". " + tasks.get(i).toDisplayString())
+                .collect(Collectors.joining("\n"));
+        return "Here are the tasks in your list:\n" + items;
     }
 
     /**
@@ -73,10 +75,9 @@ public class Ui {
      * @param matchingTasks the list of matching tasks
      */
     public String getMatchingTasksMessage(List<Task> matchingTasks) {
-        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            sb.append(i + 1).append(". ").append(matchingTasks.get(i).toDisplayString()).append("\n");
-        }
-        return sb.toString().trim();
+        String items = IntStream.range(0, matchingTasks.size())
+                .mapToObj(i -> (i + 1) + ". " + matchingTasks.get(i).toDisplayString())
+                .collect(Collectors.joining("\n"));
+        return "Here are the matching tasks in your list:\n" + items;
     }
 }
