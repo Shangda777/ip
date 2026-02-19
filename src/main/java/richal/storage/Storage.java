@@ -15,7 +15,7 @@ import richal.task.Task;
 import richal.task.Todo;
 
 /**
- * Handles loading and saving tasks from/to a file.
+ * Handles loading and saving tasks from/to a file
  */
 public class Storage {
     private static final String SEPARATOR = " | ";

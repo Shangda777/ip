@@ -7,7 +7,7 @@ public class DukeException extends Exception {
     /**
      * Creates a DukeException with the given message.
      *
-     * @param message the error message
+     * @param message the message to display
      */
     public DukeException(String message) {
         super(message);
