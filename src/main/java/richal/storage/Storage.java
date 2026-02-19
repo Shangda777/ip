@@ -76,6 +76,18 @@ public class Storage {
         }
     }
 
+    private void createFile(File file) throws DukeException {
+        try {
+            File parent = file.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new DukeException("Error creating data file: " + e.getMessage());
+        }
+    }
+
     private Task parseTask(String line) {
         assert line != null : "Storage line to parse should not be null";
         try {
