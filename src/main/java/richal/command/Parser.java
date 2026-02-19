@@ -106,6 +106,9 @@ public class Parser {
             throw new DukeException("The description of a todo cannot be empty.");
         }
         Task task = new Todo(desc);
+        if (taskList.hasDuplicate(task)) {
+            throw new DukeException("This task already exists in your list.");
+        }
         taskList.addTask(task);
         saveToStorage(taskList, storage);
         return ui.getTaskAddedMessage(task, taskList.getSize());
@@ -118,9 +121,14 @@ public class Parser {
         }
         try {
             Task task = new Deadline(parts[0].trim(), parts[1].trim());
+            if (taskList.hasDuplicate(task)) {
+                throw new DukeException("This task already exists in your list.");
+            }
             taskList.addTask(task);
             saveToStorage(taskList, storage);
             return ui.getTaskAddedMessage(task, taskList.getSize());
+        } catch (DukeException e) {
+            throw e;
         } catch (Exception e) {
             throw new DukeException(DATE_FORMAT_HELP);
         }
@@ -137,9 +145,14 @@ public class Parser {
         }
         try {
             Task task = new Event(parts[0].trim(), toParts[0].trim(), toParts[1].trim());
+            if (taskList.hasDuplicate(task)) {
+                throw new DukeException("This task already exists in your list.");
+            }
             taskList.addTask(task);
             saveToStorage(taskList, storage);
             return ui.getTaskAddedMessage(task, taskList.getSize());
+        } catch (DukeException e) {
+            throw e;
         } catch (Exception e) {
             throw new DukeException(DATE_FORMAT_HELP);
         }

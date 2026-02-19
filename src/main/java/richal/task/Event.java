@@ -1,6 +1,7 @@
 package richal.task;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import richal.util.DateTimeParser;
 
@@ -61,5 +62,20 @@ public class Event extends Task {
     /** Returns the end date/time formatted for file storage. */
     public String getTo() {
         return DateTimeParser.formatForStorage(to);
+    }
+
+    /** Two events are equal if they have the same description, start, and end date/time. */
+    @Override
+    public boolean equals(Object other) {
+        if (!super.equals(other)) {
+            return false;
+        }
+        Event event = (Event) other;
+        return Objects.equals(from, event.from) && Objects.equals(to, event.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), from, to);
     }
 }

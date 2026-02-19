@@ -86,6 +86,19 @@ public class TaskList {
     }
 
     /**
+     * Returns true if an identical task already exists in the list.
+     * Two tasks are considered identical if they are of the same type,
+     * have the same description, and the same date/time fields (if any).
+     *
+     * @param task the task to check for duplicates
+     */
+    public boolean hasDuplicate(Task task) {
+        assert task != null : "Task to check should not be null";
+        return Arrays.stream(tasks, 0, size)
+                .anyMatch(t -> t.equals(task));
+    }
+
+    /**
      * Returns tasks whose description contains the keyword (case-insensitive).
      *
      * @param keyword the search keyword

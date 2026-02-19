@@ -1,6 +1,7 @@
 package richal.task;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import richal.util.DateTimeParser;
 
@@ -45,5 +46,20 @@ public class Deadline extends Task {
     /** Returns the due date/time formatted for file storage. */
     public String getBy() {
         return DateTimeParser.formatForStorage(by);
+    }
+
+    /** Two deadlines are equal if they have the same description and due date/time. */
+    @Override
+    public boolean equals(Object other) {
+        if (!super.equals(other)) {
+            return false;
+        }
+        Deadline deadline = (Deadline) other;
+        return Objects.equals(by, deadline.by);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), by);
     }
 }

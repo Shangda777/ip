@@ -76,18 +76,6 @@ public class Storage {
         }
     }
 
-    private void createFile(File file) throws DukeException {
-        try {
-            File parent = file.getParentFile();
-            if (parent != null && !parent.exists()) {
-                parent.mkdirs();
-            }
-            file.createNewFile();
-        } catch (IOException e) {
-            throw new DukeException("Error creating data file: " + e.getMessage());
-        }
-    }
-
     private Task parseTask(String line) {
         assert line != null : "Storage line to parse should not be null";
         try {
@@ -112,14 +100,14 @@ public class Storage {
 
     private Task createTask(String type, String description, String[] parts) {
         switch (type) {
-        case "T":
-            return new Todo(description);
-        case "D":
-            return parts.length >= 4 ? new Deadline(description, parts[3]) : null;
-        case "E":
-            return parts.length >= 5 ? new Event(description, parts[3], parts[4]) : null;
-        default:
-            return null;
+            case "T":
+                return new Todo(description);
+            case "D":
+                return parts.length >= 4 ? new Deadline(description, parts[3]) : null;
+            case "E":
+                return parts.length >= 5 ? new Event(description, parts[3], parts[4]) : null;
+            default:
+                return null;
         }
     }
 
