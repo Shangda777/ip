@@ -17,6 +17,10 @@ import richal.ui.Ui;
 public class Parser {
 
     public static String parseAndGetResponse(String input, TaskList taskList, Ui ui, Storage storage) throws DukeException {
+        assert input != null : "User input should not be null";
+        assert taskList != null : "TaskList should not be null";
+        assert ui != null : "Ui should not be null";
+        assert storage != null : "Storage should not be null";
 
         if (input.equals("bye")) {
             return ui.getGoodbyeMessage();
@@ -112,6 +116,8 @@ public class Parser {
     }
 
     private static int parseIndex(String s, int size) throws DukeException {
+        assert s != null : "Index string should not be null";
+        assert size >= 0 : "Task list size should not be negative";
         try {
             int number = Integer.parseInt(s);
             int idx = number - 1;
@@ -125,6 +131,9 @@ public class Parser {
     }
 
     private static void saveToStorage(TaskList taskList, Storage storage, Ui ui) {
+        assert taskList != null : "TaskList should not be null when saving";
+        assert storage != null : "Storage should not be null when saving";
+        assert ui != null : "Ui should not be null when saving";
         try {
             storage.save(taskList.getAllTasks());
         } catch (DukeException e) {

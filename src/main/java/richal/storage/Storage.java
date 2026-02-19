@@ -20,6 +20,8 @@ public class Storage {
     private final String filePath;
 
     public Storage(String filePath) {
+        assert filePath != null : "Storage file path should not be null";
+        assert !filePath.isBlank() : "Storage file path should not be blank";
         this.filePath = filePath;
     }
 
@@ -59,6 +61,7 @@ public class Storage {
     }
 
     private Task parseTask(String line) {
+        assert line != null : "Storage line to parse should not be null";
         try {
             String[] parts = line.split(" \\| ");
             if (parts.length < 3) {
@@ -116,6 +119,7 @@ public class Storage {
     }
 
     private String formatTask(Task task) {
+        assert task != null : "Task to format should not be null";
         String type;
         String extraInfo = "";
 

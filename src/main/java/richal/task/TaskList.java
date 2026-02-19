@@ -11,11 +11,14 @@ public class TaskList {
     private int size;
 
     public TaskList(int capacity) {
+        assert capacity > 0 : "TaskList capacity should be positive";
         this.tasks = new Task[capacity];
         this.size = 0;
     }
 
     public TaskList(List<Task> taskList) {
+        assert taskList != null : "Initial task list should not be null";
+        assert taskList.size() <= 100 : "Initial task list should fit in default capacity";
         this.tasks = new Task[100];
         this.size = 0;
         for (Task task : taskList) {
@@ -24,6 +27,8 @@ public class TaskList {
     }
 
     public void addTask(Task task) {
+        assert task != null : "Task to add should not be null";
+        assert size < tasks.length : "TaskList should have available capacity";
         tasks[size++] = task;
     }
 
@@ -32,10 +37,13 @@ public class TaskList {
     }
 
     public Task getTask(int index) {
+        assert index >= 0 && index < size : "Task index should be in range";
+        assert tasks[index] != null : "Task at index should not be null";
         return tasks[index];
     }
 
     public void deleteTask(int index) {
+        assert index >= 0 && index < size : "Delete index should be in range";
         for (int i = index; i < size - 1; i++) {
             tasks[i] = tasks[i + 1];
         }
@@ -51,6 +59,7 @@ public class TaskList {
     }
 
     public List<Task> findTasks(String keyword) {
+        assert keyword != null : "Find keyword should not be null";
         List<Task> matching = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
         for (int i = 0; i < size; i++) {
