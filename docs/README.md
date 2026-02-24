@@ -1,30 +1,108 @@
-# Duke User Guide
+# Richal User Guide
 
-// Update the title above to match the actual product name
+Richal is a simple task management chatbot with a JavaFX GUI. You can add tasks, list them, mark them as done, search by keyword, and ask an AI assistant about features or even let it execute commands.
 
-// Product screenshot goes here
+## Screenshot
 
-// Product intro goes here
+![Ui](Ui.png)
 
-## Adding deadlines
+## Quick start
 
-// Describe the action and its outcome.
+- **Run**: `./gradlew run`
+- **Type commands** in the input box and press Enter (or click **Send**).
 
-// Give examples of usage
+## Command summary
 
-Example: `keyword (optional arguments)`
+- **Add todo**: `todo <description>`
+- **Add deadline**: `deadline <description> /by <dateTime>`
+- **Add event**: `event <description> /from <dateTime> /to <dateTime>`
+- **List tasks**: `list`
+- **Mark done**: `mark <taskNumber>`
+- **Mark not done**: `unmark <taskNumber>`
+- **Delete**: `delete <taskNumber>`
+- **Find**: `find <keyword>`
+- **AI assistant**: `@ai <message>` (can answer questions or execute actions)
+- **Exit**: `bye`
 
-// A description of the expected outcome goes here
+Notes:
+- `<taskNumber>` is **1-based** (e.g. `mark 1` marks the first task).
+- Richal prevents adding **duplicate** tasks (same type + same description + same date/time fields, if any).
 
-```
-expected output
-```
+## Features
 
-## Feature ABC
+### Add a todo
 
-// Feature details
+Format:
+- `todo <description>`
 
+Example:
+- `todo read book`
 
-## Feature XYZ
+### Add a deadline
 
-// Feature details
+Format:
+- `deadline <description> /by <dateTime>`
+
+Example:
+- `deadline return book /by 2/12/2019 1800`
+
+### Add an event
+
+Format:
+- `event <description> /from <dateTime> /to <dateTime>`
+
+Example:
+- `event team lunch /from 2/3/2025 1200 /to 2/3/2025 1300`
+
+### List tasks
+
+Format:
+- `list`
+
+### Mark / unmark a task
+
+Format:
+- `mark <taskNumber>`
+- `unmark <taskNumber>`
+
+Examples:
+- `mark 2`
+- `unmark 2`
+
+### Delete a task
+
+Format:
+- `delete <taskNumber>`
+
+Example:
+- `delete 3`
+
+### Find tasks by keyword
+
+Format:
+- `find <keyword>`
+
+Example:
+- `find book`
+
+### AI assistant
+
+Format:
+- `@ai <message>`
+
+Examples:
+- `@ai how do I add a deadline?`
+- `@ai add a task to buy milk`
+- `@ai show my tasks`
+
+If you type just `@ai`, Richal will treat it as a greeting.
+
+## Date/time formats
+
+Richal accepts multiple input formats for `<dateTime>`:
+
+- `d/M/yyyy HHmm` (e.g. `2/12/2019 1800`)
+- `d/M/yyyy HH:mm` (e.g. `2/12/2019 18:00`)
+- `yyyy-MM-dd HHmm` (e.g. `2019-12-02 1800`)
+- `yyyy-MM-dd HH:mm` (e.g. `2019-12-02 18:00`)
+- Date only (defaults to `00:00`), e.g. `2/12/2019` or `2019-12-02`
