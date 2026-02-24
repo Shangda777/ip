@@ -1,0 +1,72 @@
+/* A-BetterGui: asymmetric conversation, error highlighting, aesthetics */
+
+.root {
+    -fx-font-family: "SF Pro Text", "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #1a1a1a;
+}
+
+/* User bubble: right-aligned, distinct color */
+.dialog-box.user {
+    -fx-alignment: center-right;
+}
+
+.dialog-box.user .dialog {
+    -fx-background-color: #e3f2fd;
+    -fx-background-radius: 12 12 4 12;
+    -fx-padding: 10 14;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-max-width: 280px;
+    -fx-text-fill: #1a1a1a;
+}
+
+/* Richal bubble: left-aligned, different color */
+.dialog-box.richal .dialog {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12 12 12 4;
+    -fx-padding: 10 14;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-max-width: 280px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 12 12 12 4;
+    -fx-border-width: 1;
+    -fx-text-fill: #1a1a1a;
+}
+
+/* Error messages: highlight to draw attention */
+.dialog-box.richal.error .dialog {
+    -fx-background-color: #ffebee;
+    -fx-border-color: #ef5350;
+    -fx-border-width: 1.5;
+    -fx-text-fill: #c62828;
+}
+
+/* Profile picture: rounded appearance (circle clip applied in code) */
+.dialog-box .displayPicture {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 1);
+}
+
+/* Input area */
+.text-field {
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-padding: 8 12;
+}
+
+.button {
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+/* ScrollPane: no extra border, fit content */
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}

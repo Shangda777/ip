@@ -13,9 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 /**
  * A dialog box with an ImageView and a Label.
+ * A-BetterGui: asymmetric conversation (user vs Richal), error highlighting, profile circle clip.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -23,7 +25,7 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView displayPicture;
 
-    private DialogBox(String text, Image img) {
+    private DialogBox(String text, Image img, boolean isUser, boolean isError) {
         assert text != null : "Dialog text should not be null";
         assert img != null : "Dialog image should not be null";
         try {
@@ -36,7 +38,26 @@ public class DialogBox extends HBox {
         }
 
         dialog.setText(text);
+        dialog.getStyleClass().add("dialog");
         displayPicture.setImage(img);
+
+        getStyleClass().add("dialog-box");
+        if (isUser) {
+            getStyleClass().add("user");
+        } else {
+            getStyleClass().add("richal");
+            if (isError) {
+                getStyleClass().add("error");
+            }
+        }
+
+        double size = Math.min(displayPicture.getFitWidth(), displayPicture.getFitHeight());
+        Circle clip = new Circle(size / 2, size / 2, size / 2);
+        displayPicture.setClip(clip);
+
+        if (!isUser) {
+            flip();
+        }
     }
 
     private void flip() {
@@ -50,15 +71,20 @@ public class DialogBox extends HBox {
      * Creates a dialog box for the user's message (image on the right).
      */
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        return new DialogBox(text, img, true, false);
     }
 
     /**
      * Creates a dialog box for Richal's reply (image on the left).
      */
     public static DialogBox getRichalDialog(String text, Image img) {
-        DialogBox db = new DialogBox(text, img);
-        db.flip();
-        return db;
+        return new DialogBox(text, img, false, false);
+    }
+
+    /**
+     * Creates a dialog box for Richal's error message (highlighted style).
+     */
+    public static DialogBox getRichalErrorDialog(String text, Image img) {
+        return new DialogBox(text, img, false, true);
     }
 }

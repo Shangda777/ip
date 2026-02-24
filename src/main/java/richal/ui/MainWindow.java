@@ -67,7 +67,11 @@ public class MainWindow extends AnchorPane {
 
         task.setOnSucceeded(event -> {
             String response = task.getValue();
-            dialogContainer.getChildren().add(DialogBox.getRichalDialog(response, richalImage));
+            boolean isError = response.startsWith("OOPS!!!");
+            dialogContainer.getChildren().add(
+                isError ? DialogBox.getRichalErrorDialog(response, richalImage)
+                        : DialogBox.getRichalDialog(response, richalImage)
+            );
             userInput.setDisable(false);
             sendButton.setDisable(false);
             userInput.requestFocus();
@@ -79,7 +83,7 @@ public class MainWindow extends AnchorPane {
 
         task.setOnFailed(event -> {
             dialogContainer.getChildren().add(
-                DialogBox.getRichalDialog("Something went wrong. Please try again.", richalImage)
+                DialogBox.getRichalErrorDialog("Something went wrong. Please try again.", richalImage)
             );
             userInput.setDisable(false);
             sendButton.setDisable(false);

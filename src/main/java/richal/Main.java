@@ -23,8 +23,10 @@ public class Main extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
+            scene.getStylesheets().add(Main.class.getResource("/view/style.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Richal");
+            stage.setResizable(true);
             fxmlLoader.<MainWindow>getController().setRichal(richal);
             stage.show();
         } catch (IOException e) {
