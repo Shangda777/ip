@@ -3,6 +3,7 @@ package richal.command;
 import java.util.List;
 
 import richal.DukeException;
+import richal.ai.AiHelper;
 import richal.storage.Storage;
 import richal.task.Deadline;
 import richal.task.Event;
@@ -28,11 +29,12 @@ public class Parser {
      * @param taskList the current task list
      * @param ui       the UI for building response messages
      * @param storage  the storage for persistence
+     * @param aiHelper the AI helper for @ai queries (may be null if unavailable)
      * @return the response to display
      * @throws DukeException if the command is invalid or malformed
      */
     public static String parseAndGetResponse(String input, TaskList taskList, Ui ui,
-            Storage storage) throws DukeException {
+            Storage storage, AiHelper aiHelper) throws DukeException {
         assert input != null : "User input should not be null";
         assert taskList != null : "TaskList should not be null";
         assert ui != null : "Ui should not be null";
@@ -43,6 +45,9 @@ public class Parser {
         }
         if (input.equals("list")) {
             return ui.getTaskListMessage(taskList);
+        }
+        if (input.equals("@ai") || input.startsWith("@ai ")) {
+            return handleAi(input, taskList, ui, storage, aiHelper);
         }
         if (input.startsWith("find ")) {
             return handleFind(input, taskList, ui);
@@ -67,6 +72,38 @@ public class Parser {
         }
 
         throw new DukeException("I'm sorry, but I don't know what that means :-(");
+    }
+
+    private static String handleAi(String input, TaskList taskList, Ui ui,
+            Storage storage, AiHelper aiHelper) throws DukeException {
+        if (aiHelper == null) {
+            throw new DukeException("AI assistant is not available. Please set the LLM_API_KEY environment variable.");
+        }
+        String query = input.length() > 4 ? input.substring(4).trim() : "";
+        if (query.isEmpty()) {
+            query = "hi";
+        }
+        String aiResponse = aiHelper.getAiResponse(query);
+        if (aiResponse.startsWith(AiHelper.COMMAND_PREFIX)) {
+            String command = aiResponse.substring(AiHelper.COMMAND_PREFIX.length()).trim();
+            if (!isValidCommand(command)) {
+                return "Sorry, I couldn't translate that into a valid command. The AI suggested: \"" + command + "\"";
+            }
+            String result = parseAndGetResponse(command, taskList, ui, storage, aiHelper);
+            return "[AI executed: " + command + "]\n" + result;
+        }
+        return aiResponse;
+    }
+
+    private static boolean isValidCommand(String command) {
+        return command.startsWith("todo ")
+                || command.startsWith("deadline ")
+                || command.startsWith("event ")
+                || command.equals("list")
+                || command.startsWith("mark ")
+                || command.startsWith("unmark ")
+                || command.startsWith("delete ")
+                || command.startsWith("find ");
     }
 
     private static String handleFind(String input, TaskList taskList, Ui ui) throws DukeException {

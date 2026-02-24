@@ -2,6 +2,7 @@ package richal;
 
 import java.util.List;
 
+import richal.ai.AiHelper;
 import richal.command.Parser;
 import richal.storage.Storage;
 import richal.task.Task;
@@ -18,6 +19,7 @@ public class Richal {
     private Storage storage;
     private TaskList taskList;
     private Ui ui;
+    private AiHelper aiHelper;
 
     /**
      * Creates a Richal instance, loading existing tasks from the given file.
@@ -32,6 +34,15 @@ public class Richal {
             taskList = new TaskList(tasks);
         } catch (DukeException e) {
             taskList = new TaskList(100);
+        }
+        aiHelper = initAiHelper();
+    }
+
+    private AiHelper initAiHelper() {
+        try {
+            return new AiHelper();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -48,7 +59,7 @@ public class Richal {
      */
     public String getResponse(String input) {
         try {
-            return Parser.parseAndGetResponse(input, taskList, ui, storage);
+            return Parser.parseAndGetResponse(input, taskList, ui, storage, aiHelper);
         } catch (DukeException e) {
             return ui.getErrorMessage(e.getMessage());
         } catch (Exception e) {

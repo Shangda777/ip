@@ -24,3 +24,8 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+# Ignore environment variable / secret files
+.env
+*.env
+.env.local

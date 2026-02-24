@@ -28,6 +28,9 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:$javaFxVersion:win")
     implementation("org.openjfx:javafx-graphics:$javaFxVersion:mac")
     implementation("org.openjfx:javafx-graphics:$javaFxVersion:linux")
+    implementation("dev.langchain4j:langchain4j-google-ai-gemini:1.0.0-beta1")
+    implementation("dev.langchain4j:langchain4j:1.0.0-beta1")
+
 
     // JUnit 5 for tests
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
@@ -41,11 +44,12 @@ java {
 }
 
 application {
-    mainClass.set("richal.Main")
+    mainClass.set(project.findProperty("mainClass") as String? ?: "richal.Main")
 }
 
 tasks.named<JavaExec>("run") {
     standardInput = System.`in`
+    System.getenv("LLM_API_KEY")?.let { environment("LLM_API_KEY", it) }
 }
 
 tasks.named<Test>("test") {
@@ -59,3 +63,4 @@ tasks.named<Jar>("jar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }
+

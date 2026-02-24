@@ -1,5 +1,7 @@
 package richal.ui;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -44,16 +46,46 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         assert richal != null : "Richal instance should be initialized before handling input";
-        String input = userInput.getText();
-        String response = richal.getResponse(input);
-        dialogContainer.getChildren().addAll(
-            DialogBox.getUserDialog(input, userImage),
-            DialogBox.getRichalDialog(response, richalImage)
-        );
-        userInput.clear();
-
-        if (input.trim().equalsIgnoreCase("bye")) {
-            javafx.application.Platform.exit();
+        String input = userInput.getText().trim();
+        if (input.isEmpty()) {
+            return;
         }
+
+        // Show user message immediately and disable input while processing
+        dialogContainer.getChildren().add(DialogBox.getUserDialog(input, userImage));
+        userInput.clear();
+        userInput.setDisable(true);
+        sendButton.setDisable(true);
+
+        // Run Richal's response on a background thread to avoid blocking the UI
+        Task<String> task = new Task<>() {
+            @Override
+            protected String call() {
+                return richal.getResponse(input);
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            String response = task.getValue();
+            dialogContainer.getChildren().add(DialogBox.getRichalDialog(response, richalImage));
+            userInput.setDisable(false);
+            sendButton.setDisable(false);
+            userInput.requestFocus();
+
+            if (input.equalsIgnoreCase("bye")) {
+                Platform.exit();
+            }
+        });
+
+        task.setOnFailed(event -> {
+            dialogContainer.getChildren().add(
+                DialogBox.getRichalDialog("Something went wrong. Please try again.", richalImage)
+            );
+            userInput.setDisable(false);
+            sendButton.setDisable(false);
+            userInput.requestFocus();
+        });
+
+        new Thread(task).start();
     }
 }
