@@ -97,6 +97,26 @@ Examples:
 
 If you type just `@ai`, Richal will treat it as a greeting.
 
+## Troubleshooting
+
+### I clicked “Run Java” in the IDE and it failed
+
+This project uses **Gradle** to provide the correct runtime classpath (JavaFX + AI dependencies).
+Use:
+
+- `./gradlew run`
+
+### AI assistant says it is unavailable
+
+The AI feature requires an environment variable named `LLM_API_KEY`.
+
+- macOS (zsh):
+
+```bash
+export LLM_API_KEY="YOUR_API_KEY"
+./gradlew run
+```
+
 ## Date/time formats
 
 Richal accepts multiple input formats for `<dateTime>`:
