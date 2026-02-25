@@ -2,6 +2,7 @@ plugins {
     application
     java
     id("checkstyle")
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 repositories {
@@ -15,7 +16,7 @@ checkstyle {
 val javaFxVersion = "17.0.7"
 
 dependencies {
-    // JavaFX (multi-platform)
+    // JavaFX (multi-platform fat JAR — all three classifiers bundled)
     implementation("org.openjfx:javafx-base:$javaFxVersion:win")
     implementation("org.openjfx:javafx-base:$javaFxVersion:mac")
     implementation("org.openjfx:javafx-base:$javaFxVersion:linux")
@@ -30,7 +31,6 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:$javaFxVersion:linux")
     implementation("dev.langchain4j:langchain4j-google-ai-gemini:1.0.0-beta1")
     implementation("dev.langchain4j:langchain4j:1.0.0-beta1")
-
 
     // JUnit 5 for tests
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
@@ -56,11 +56,12 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.named<Jar>("jar") {
+tasks.shadowJar {
+    archiveBaseName.set("richal")
+    archiveClassifier.set("")
+    archiveVersion.set("")
     manifest {
         attributes["Main-Class"] = "richal.Main"
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    mergeServiceFiles()
 }
-
