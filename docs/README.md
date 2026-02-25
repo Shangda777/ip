@@ -97,6 +97,11 @@ Examples:
 
 If you type just `@ai`, Richal will treat it as a greeting.
 
+Behavior:
+- If your message is a **question**, Richal will reply in natural language.
+- If your message is an **action request**, Richal may translate it into a valid command and execute it.
+  In that case, the reply will start with `[AI executed: ...]`.
+
 ## Troubleshooting
 
 ### I clicked “Run Java” in the IDE and it failed
