@@ -40,6 +40,7 @@ public class DialogBox extends HBox {
         dialog.setText(text);
         dialog.getStyleClass().add("dialog");
         displayPicture.setImage(img);
+        displayPicture.getStyleClass().add("displayPicture");
 
         getStyleClass().add("dialog-box");
         if (isUser) {
